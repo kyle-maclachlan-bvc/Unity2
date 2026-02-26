@@ -3,86 +3,100 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement")]
-    [SerializeField] private Camera playerCamera;           // Sets up the Camera to follow the player
-    [SerializeField] private float moveSpeed = 10f;         
-    [SerializeField] private float rotationSpeed = 10f;
-    [SerializeField] private float jumpForce = 10f;
-    [SerializeField] private float gravity = -5f;
+    [SerializeField] private Camera playerCamera;
+    [SerializeField] private float moveSpeed = 2;
+    [SerializeField] private float rotationSpeed = 10;
+    [SerializeField] private float gravity = -9.8f;
+    [SerializeField] private float jumpVelocity = 10f;
 
     [Space(10)]
     [Header("Ground Check")]
     [SerializeField] private Vector3 groundCheckOffset;
-    [SerializeField] private float groundCheckRadius;
     [SerializeField] private float groundCheckDistance;
+    [SerializeField] private float groundCheckRadius;
     [SerializeField] private LayerMask groundLayer;
     
-    private Vector2 _moveInput;             // movement input
-    private Vector3 _camForward;            // the forward (+) and backwards (-) direction of the camera
-    private Vector3 _camRight;              // the right (+) and left (-) direction of the camera
-    private Vector3 _moveDirection;         // applies direction
-    private Quaternion _targetRotation;     // applies character rotation
-    private Vector3 _velocity;              // used to help calculate gravity
-    
-    
-    
+    private Vector2 _moveInput;
+    private Vector3 _camForward;
+    private Vector3 _camRight;
+    private Vector3 _moveDirection;
     private CharacterController _characterController;
-    public void Start()
+    private Quaternion _targetRotation;
+    private Vector3 _velocity;
+
+    // Property of the variable so it may be accessed by other codes.
+    private bool _isGrounded;
+    //public bool _IsGrounded
+    //{
+    //    get => _isGrounded;
+    //    private set { _isGrounded = value; }
+    //}
+
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
     {
         _characterController = GetComponent<CharacterController>();
     }
 
-    public void Update()
+    // Update is called once per frame
+    void Update()
     {
         CalculateMovement();
         _characterController.Move(_velocity * Time.deltaTime);
     }
-    
+
+    private void FixedUpdate()
+    {
+        CheckGrounded();
+        if (_isGrounded && _velocity.y < 0)
+        {
+            _velocity.y = -0.2f;
+        }
+    }
+
     public void OnMove(InputValue value)
     {
-        // Movement Controls, this piece is not rotation
-        _moveInput = value.Get<Vector2>(); 
-        
-        // Movement Controls, rotation commands
+        _moveInput = value.Get<Vector2>();
     }
 
     public void OnJump()
     {
-        Debug.Log("JUMP!");
-        _velocity.y = jumpForce;
-        if (isGrounded())
+        if(_isGrounded)
         {
-            Debug.Log("GROUNDED!");
+            Debug.Log("JUMP"); 
+            _velocity.y = jumpVelocity;
         }
     }
 
     private void CalculateMovement()
     {
-        // self-contained calculations for controls
         _camForward = playerCamera.transform.forward;
         _camRight = playerCamera.transform.right;
         _camForward.y = 0;
-        _camRight.y = 0;        // Y direction is set to 0, so no upward movement
+        _camRight.y = 0;
         _camForward.Normalize();
-        _moveInput.Normalize();
-        
-        _moveDirection = _camRight * _moveInput.x + _camForward * _moveInput.y;  // .x = horizontal input, .y = vertical input
+        _camRight.Normalize();
 
-        if (_moveDirection.sqrMagnitude > 0.01f)
+        _moveDirection = _camRight * _moveInput.x + _camForward * _moveInput.y;
+
+        if(_moveDirection.sqrMagnitude > 0.01f)
         {
-            _targetRotation = Quaternion.LookRotation(_moveDirection); 
-            transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, rotationSpeed * Time.deltaTime);    
+            _targetRotation = Quaternion.LookRotation(_moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, rotationSpeed * Time.deltaTime);
         }
         
-        // calculate gravity
+        //Calculate gravity
         _velocity = Vector3.up * _velocity.y + _moveDirection * moveSpeed;
-        _velocity.y += gravity;
+        _velocity.y += gravity * Time.deltaTime;
 
+        
+        
     }
 
-    private bool isGrounded()
+    public void CheckGrounded()
     {
-        return Physics.SphereCast(
+        _isGrounded = Physics.SphereCast(
             transform.position + groundCheckOffset,
             groundCheckRadius,
             Vector3.down,
@@ -91,13 +105,13 @@ public class PlayerController : MonoBehaviour
             groundLayer
         );
     }
-
+    
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.mediumPurple;
-        Gizmos.DrawWireSphere(transform.position + groundCheckOffset, groundCheckRadius);
-        Gizmos.DrawWireSphere(transform.position + groundCheckOffset + Vector3.down * groundCheckDistance, groundCheckRadius);
-        Gizmos.DrawWireCube(transform.position + groundCheckOffset + (Vector3.down * groundCheckDistance) / 2,
-            new Vector3(2 * groundCheckDistance, groundCheckRadius, 2 * groundCheckRadius));
+        Gizmos.color = Color.purple;
+        Gizmos.DrawSphere(transform.position + groundCheckOffset, groundCheckRadius);
+        Gizmos.DrawSphere(transform.position + groundCheckOffset + Vector3.down * groundCheckDistance, groundCheckRadius);
+        Gizmos.DrawCube(transform.position + groundCheckOffset + Vector3.down * groundCheckDistance/2, 
+                    new Vector3(1.5f* groundCheckRadius, groundCheckDistance , 1.5f * groundCheckRadius) );
     }
 }
