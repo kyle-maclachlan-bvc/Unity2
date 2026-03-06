@@ -4,12 +4,13 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private Camera playerCamera;
     [SerializeField] private float moveSpeed = 2;
     [SerializeField] private float rotationSpeed = 10;
-    [SerializeField] private float gravity = -9.8f;
     [SerializeField] private float jumpVelocity = 10f;
-
+    public float gravity = -9.8f;
+    
     [Space(10)]
     [Header("Ground Check")]
     [SerializeField] private Vector3 groundCheckOffset;
@@ -17,6 +18,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundCheckRadius;
     [SerializeField] private LayerMask groundLayer;
 
+    [Space(10)] [Header("Pausing")]
+    [SerializeField] private InputAction PauseInput;
+    
     public event Action OnJumpEvent;
     
     private Vector2 _moveInput;
@@ -123,4 +127,22 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawCube(transform.position + groundCheckOffset + Vector3.down * groundCheckDistance/2, 
                     new Vector3(1.5f* groundCheckRadius, groundCheckDistance , 1.5f * groundCheckRadius) );
     }
+
+    void OnEnable()
+    {
+        PauseInput.Enable();
+        PauseInput.performed += HandlePause;
+    }
+
+    void OnDisable()
+    {
+        PauseInput.performed -= HandlePause;
+    }
+
+    void HandlePause(InputAction.CallbackContext context)
+    {
+        GameManager.Instance.TogglePause();
+    }
 }
+
+

@@ -42,6 +42,7 @@ public class ChestInteractable : MonoBehaviour, IInteractable
     {
         Debug.Log($"interacted with {gameObject.name}");
         
+        AudioManager.Instance.PlayTreasurePickup();
 
         _collectTween = transform.DOScale(0, .5f).SetEase(Ease.InBack).OnComplete(() =>
         {
