@@ -1,16 +1,35 @@
 using UnityEngine;
+using TMPro;
 
 public class LevelClear : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public static LevelClear Instance;
+
+    [SerializeField] private GameObject levelClearUI;
+    [SerializeField] private TMP_Text levelClearText;
+
+void Awake()
     {
-        
+        if (Instance != null && Instance != this)
+            Destroy(this.gameObject);
+
+        Instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        
+        levelClearUI.SetActive(false);
     }
+
+    public void ShowLevelClear(string textValue)
+    {
+        levelClearUI.SetActive(true);
+        levelClearText.SetText(textValue);
+    }
+
+    public void HideLevelClear()
+    {
+        levelClearUI.SetActive(false);
+    }
+
 }

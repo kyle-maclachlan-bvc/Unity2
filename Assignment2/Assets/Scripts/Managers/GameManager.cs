@@ -1,9 +1,10 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-
+    
     private bool _isPaused = false;
 
     void Awake()
@@ -33,5 +34,14 @@ public class GameManager : MonoBehaviour
         _isPaused = true;
         Time.timeScale = 0f;
     }
+    
+    public void Win()
+    {
+        Debug.Log("You cleared the level!");
+        LevelClear.Instance.ShowLevelClear("You've cleared the level!");
+        AudioManager.Instance.PlayLevelClear();
+        
+    }
+    
     
 }

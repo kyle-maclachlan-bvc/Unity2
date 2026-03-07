@@ -6,7 +6,8 @@ public class AudioManager : MonoBehaviour
 
     [Header("Sound Effects")]
     [SerializeField] private AudioClip treasurePickup;   // Interact with Treasure Chest SFX
-
+    [SerializeField] private AudioClip levelClear;
+    
     [Header("Settings")]
     [Range(0, 1f)]
     [SerializeField] private float sfxVolume = 1f;
@@ -31,6 +32,11 @@ public class AudioManager : MonoBehaviour
     public void PlayTreasurePickup()
     {
         PlaySFX(treasurePickup);
+    }
+
+    public void PlayLevelClear()
+    {
+        PlaySFX(levelClear);
     }
     
     // Internal Helper
