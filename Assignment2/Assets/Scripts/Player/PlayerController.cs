@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private float groundCheckRadius;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private float coyoteTime = 0.15f;
+
+    private float _lastGroundedTime;
 
     [Space(10)] [Header("Pausing")]
     [SerializeField] private InputAction PauseInput;
@@ -31,6 +34,8 @@ public class PlayerController : MonoBehaviour
     private Quaternion _targetRotation;
     private Vector3 _velocity;
     private bool _isGrounded;
+    private bool _readyAttack;
+    private bool _isAttacking;
     
     // Property of the variable so it may be accessed by other codes.
     public bool IsGrounded()
@@ -40,6 +45,14 @@ public class PlayerController : MonoBehaviour
     public Vector3 GetPlayerVelocity()
     {
         return _velocity;
+    }
+    public bool ReadyAttack()
+    {
+        return _readyAttack;
+    }
+    public bool IsAttacking()
+    {
+        return _isAttacking;
     }
 
 
@@ -117,6 +130,11 @@ public class PlayerController : MonoBehaviour
             groundCheckDistance,
             groundLayer
         );
+
+        if (_isGrounded)
+            _lastGroundedTime = Time.time;
+
+        _isGrounded = Time.time - _lastGroundedTime <= coyoteTime;
     }
     
     void OnDrawGizmos()

@@ -4,6 +4,7 @@ using DG.Tweening;
 public class ChestInteractable : MonoBehaviour, IInteractable
 {
     [SerializeField] private Animator anim;
+    [SerializeField] private Rigidbody rb;
 
     private int isOpenHash;
     private Tween _loopTween;
@@ -51,6 +52,12 @@ public class ChestInteractable : MonoBehaviour, IInteractable
         
         Toast.Instance.HideToast();
     }
+
+    /*void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("ground"))
+            rb.constraints = RigidbodyConstraints.FreezeAll;
+    }*/
 
     void OnDestroy()
     {

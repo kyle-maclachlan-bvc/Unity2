@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5918085363392283621}
   - component: {fileID: 3200387292363062521}
   - component: {fileID: 6960950585567581424}
+  - component: {fileID: 8075962779918517291}
   m_Layer: 0
   m_Name: Arrow
   m_TagString: Untagged
@@ -84,6 +85,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &8075962779918517291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3304328434910073292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bea424472319f54ab1663d079173c46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArrowLifetime
+  popEffect: {fileID: 3262885460080024161, guid: c7f42b1aaf6a1f44e96812965444aa84, type: 3}
+  lifetime: 5
 --- !u!1 &4296938753773823550
 GameObject:
   m_ObjectHideFlags: 0
