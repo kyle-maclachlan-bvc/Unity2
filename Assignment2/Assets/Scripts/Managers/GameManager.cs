@@ -9,6 +9,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject pausedUI;
     [SerializeField] private TMP_Text pausedText;
     
+    [SerializeField] private Transform clearPosition;   // where the Player will stand after clearing level.
+    [SerializeField] private PlayerController player;
+    [SerializeField] private PlayerAnimator playerAnimator;
+    
     private bool _isPaused = false;
 
     void Awake()
@@ -49,10 +53,15 @@ public class GameManager : MonoBehaviour
     
     public void Win()
     {
-        Debug.Log("You cleared the level!");
-        LevelClear.Instance.ShowLevelClear("You've cleared the level!");
-        AudioManager.Instance.PlayLevelClear();
+        //Debug.Log("You cleared the level!");
         
+        player.MoveToPosition(clearPosition.position);
+
+        playerAnimator.PlayCheer();
+        
+        LevelClear.Instance.ShowLevelClear("You've cleared the level!");
+        
+        AudioManager.Instance.FadeOutMusic(5f);
     }
     
     

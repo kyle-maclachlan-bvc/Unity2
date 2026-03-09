@@ -8,7 +8,8 @@ public class EndLevel : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Entered End Level State");
+            //Debug.Log("Entered End Level State");
+            AudioManager.Instance.PlayLevelClear();
             GameManager.Instance.Win();
         }
     }

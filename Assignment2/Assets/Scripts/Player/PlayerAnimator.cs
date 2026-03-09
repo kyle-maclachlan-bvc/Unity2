@@ -9,11 +9,17 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] private Shooter shooter;
     [SerializeField] private float attackTimer;
 
-
+    [Header("CheeringAnimation")]
+    [SerializeField] private int clearedLevelHash;
     
     private Vector3 _playerVelocity;
-    
 
+
+    void Start()
+    {
+        clearedLevelHash = Animator.StringToHash("ClearedLevel");
+    }
+    
     // Update is called once per frame
     void Update()
     {
@@ -70,5 +76,10 @@ public class PlayerAnimator : MonoBehaviour
     public void ResetAttack()
     {
         anim.SetBool("IsAttacking", false);
+    }
+
+    public void PlayCheer()
+    {
+        anim.SetTrigger(clearedLevelHash);
     }
 }

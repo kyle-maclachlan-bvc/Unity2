@@ -183,6 +183,8 @@ public class PlayerController : MonoBehaviour
         _autoMove = true;
         _controlIsLocked = true;
         _autoMoveTarget = target;
+        
+        LevelClear.Instance.ShowLevelClear("You Cleared the Level");
     }
 
     void AutoMove()

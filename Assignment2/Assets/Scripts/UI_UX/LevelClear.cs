@@ -8,8 +8,7 @@ public class LevelClear : MonoBehaviour
     [SerializeField] private GameObject levelClearUI;
     [SerializeField] private TMP_Text levelClearText;
 
-    [SerializeField] private Transform clearPosition;   // where the Player will stand after clearing level.
-    [SerializeField] private PlayerController player;
+    
 
 void Awake()
     {
@@ -26,12 +25,9 @@ void Awake()
 
     public void ShowLevelClear(string textValue)
     {
-        player.MoveToPosition(clearPosition.position);
         
         levelClearUI.SetActive(true);
         levelClearText.SetText(textValue);
-
-        AudioManager.Instance.FadeOutMusic(5f);
     }
 
     public void HideLevelClear()
