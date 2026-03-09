@@ -14,6 +14,7 @@ public class ArrowLifetime : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Balloon"))
         {
+            AudioManager.Instance.PlayBalloonPop();
             Instantiate(popEffect, collision.transform.position, Quaternion.identity);
             Destroy(collision.gameObject);  // Pop the balloon
         }

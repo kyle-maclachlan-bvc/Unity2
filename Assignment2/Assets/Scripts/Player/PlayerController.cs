@@ -23,6 +23,10 @@ public class PlayerController : MonoBehaviour
 
     [Space(10)] [Header("Pausing")]
     [SerializeField] private InputAction PauseInput;
+
+    private bool _autoMove;
+    private bool _controlIsLocked;
+    private Vector3 _autoMoveTarget;
     
     public event Action OnJumpEvent;
     
@@ -65,6 +69,17 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_autoMove)
+             {
+                 AutoMove();
+                 return;
+             }
+
+        if (_controlIsLocked)
+        {
+            return;
+        }
+        
         CalculateMovement();
         _characterController.Move(_velocity * Time.deltaTime);
     }
@@ -87,7 +102,8 @@ public class PlayerController : MonoBehaviour
     {
         if(_isGrounded)
         {
-            Debug.Log("JUMP"); 
+            //Debug.Log("JUMP");
+            AudioManager.Instance.PlayJumpSFX();
             _velocity.y = jumpVelocity;
             OnJumpEvent?.Invoke();
         }
@@ -160,6 +176,33 @@ public class PlayerController : MonoBehaviour
     void HandlePause(InputAction.CallbackContext context)
     {
         GameManager.Instance.TogglePause();
+    }
+
+    public void MoveToPosition(Vector3 target)
+    {
+        _autoMove = true;
+        _controlIsLocked = true;
+        _autoMoveTarget = target;
+    }
+
+    void AutoMove()
+    {
+        Vector3 direction = (_autoMoveTarget - transform.position);
+        direction.y = 0;
+
+        if (direction.magnitude < 0.1f)
+        {
+            _autoMove = false;
+            _velocity = Vector3.zero;
+            return;
+        }
+
+        direction.Normalize();
+        
+        _characterController.Move(direction * moveSpeed * Time.deltaTime);
+
+        Quaternion lookRot = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, rotationSpeed * Time.deltaTime);
     }
 }
 

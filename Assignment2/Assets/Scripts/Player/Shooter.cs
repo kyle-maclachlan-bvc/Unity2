@@ -46,6 +46,8 @@ public class Shooter : MonoBehaviour
 
     public void FireArrow()
     {
+        AudioManager.Instance.PlayArrowSFX();
+        
         // create a new arrow
         _arrow = Instantiate(shootObject, shootPoint.position, shootPoint.rotation);
                 

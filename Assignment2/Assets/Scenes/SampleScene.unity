@@ -1759,9 +1759,16 @@ MonoBehaviour:
   treasurePickup: {fileID: 8300000, guid: e61091211330006438413c8b3809e77e, type: 3}
   levelClear: {fileID: 8300000, guid: 80faa1d09e0d25e4f876a6c45eb4aab5, type: 3}
   forestAmbience: {fileID: 8300000, guid: f28289d326ae6f74a94c6ba108e33ee0, type: 3}
-  sfxVolume: 1
+  levelMusic: {fileID: 8300000, guid: 67786685a7647bb41a4ddf8cf59b2b7a, type: 3}
+  playerJump: {fileID: 8300000, guid: f7c536d49d07af247afdfe922ca4a415, type: 3}
+  arrowEffect: {fileID: 8300000, guid: 26f091a4d07a0654bb1f110b63d5f544, type: 3}
+  balloonPop: {fileID: 8300000, guid: 9a88f12805ccaa34890be228393d39dd, type: 3}
+  sfxVolume: 0.2
+  musicVolume: 0.25
   sfxSource: {fileID: 0}
   ambientSource: {fileID: 0}
+  musicSource: {fileID: 0}
+  jumpPitchRange: {x: 0.9, y: 1.1}
 --- !u!1 &143213732 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: a0bd7523e1445f147886c60f88830141, type: 3}
@@ -5702,6 +5709,37 @@ Transform:
   - {fileID: 198568714}
   - {fileID: 87028053}
   m_Father: {fileID: 1426696047}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &472911604
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 472911605}
+  m_Layer: 0
+  m_Name: FinishSpot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &472911605
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472911604}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.28, y: -3.62, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2130250513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &475799035 stripped
 GameObject:
@@ -16445,10 +16483,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1558489606}
     m_Modifications:
-    - target: {fileID: -1845653221793366656, guid: c7f42b1aaf6a1f44e96812965444aa84, type: 3}
-      propertyPath: m_IsKinematic
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3262885460080024161, guid: c7f42b1aaf6a1f44e96812965444aa84, type: 3}
       propertyPath: m_Name
       value: Chest (2)
@@ -18812,6 +18846,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelClear
   levelClearUI: {fileID: 663671329}
   levelClearText: {fileID: 1098413852}
+  clearPosition: {fileID: 472911605}
+  player: {fileID: 613246594}
 --- !u!1001 &1446217464
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18916,7 +18952,7 @@ Transform:
   m_GameObject: {fileID: 1446609407}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.7, y: 1.64, z: 10.62}
+  m_LocalPosition: {x: -5.35, y: 1.64, z: 10.62}
   m_LocalScale: {x: 2.2551, y: 2.7906861, z: 2.2551}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18968,7 +19004,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: e2e85ce75518a6240a2ef7c14cf6f193, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -26635,7 +26671,8 @@ Transform:
   m_LocalPosition: {x: -78.5, y: 0, z: -9.87}
   m_LocalScale: {x: 1.9094, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 472911605}
   m_Father: {fileID: 74171760}
   m_LocalEulerAnglesHint: {x: 0, y: 2.656, z: 0}
 --- !u!65 &2130250514
