@@ -1,3 +1,4 @@
+using Mono.Cecil.Cil;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -7,11 +8,13 @@ public class AudioManager : MonoBehaviour
     [Header("Sound Effects")]
     [SerializeField] private AudioClip treasurePickup;   // Interact with Treasure Chest SFX
     [SerializeField] private AudioClip levelClear;
+    [SerializeField] private AudioClip forestAmbience;  // Audio for Forest Ambience
     
     [Header("Settings")]
     [Range(0, 1f)]
     [SerializeField] private float sfxVolume = 1f;
-    [SerializeField] private AudioSource audioSource;  // AudioSource
+    [SerializeField] private AudioSource sfxSource;  // AudioSource for sound effects
+    [SerializeField] private AudioSource ambientSource;
 
     private void Awake()
     {
@@ -23,9 +26,19 @@ public class AudioManager : MonoBehaviour
             return;
         }
         
-        audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.playOnAwake = false;
-        audioSource.spatialBlend = 0f;  // 2D Audio
+        sfxSource = gameObject.AddComponent<AudioSource>();
+        sfxSource.playOnAwake = false;
+        sfxSource.spatialBlend = 0f;  // 2D Audio
+        
+        ambientSource = gameObject.AddComponent<AudioSource>();
+        ambientSource.playOnAwake = false;
+        ambientSource.loop = true;
+        ambientSource.spatialBlend = 0f;
+    }
+
+    void Start()
+    {
+        PlayForestAmbience();
     }
     
     // Public SFX Methods
@@ -43,6 +56,14 @@ public class AudioManager : MonoBehaviour
     private void PlaySFX(AudioClip clip)
     {
         if (clip == null) return;
-        audioSource.PlayOneShot(clip, sfxVolume);
+        sfxSource.PlayOneShot(clip, sfxVolume);
+    }
+
+    private void PlayForestAmbience()
+    {
+        if (forestAmbience == null) return;
+        
+        ambientSource.clip = forestAmbience;
+        ambientSource.Play();
     }
 }

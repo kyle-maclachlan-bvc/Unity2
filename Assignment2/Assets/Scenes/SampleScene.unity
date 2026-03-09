@@ -1758,8 +1758,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
   treasurePickup: {fileID: 8300000, guid: e61091211330006438413c8b3809e77e, type: 3}
   levelClear: {fileID: 8300000, guid: 80faa1d09e0d25e4f876a6c45eb4aab5, type: 3}
+  forestAmbience: {fileID: 8300000, guid: f28289d326ae6f74a94c6ba108e33ee0, type: 3}
   sfxVolume: 1
-  audioSource: {fileID: 0}
+  sfxSource: {fileID: 0}
+  ambientSource: {fileID: 0}
 --- !u!1 &143213732 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: a0bd7523e1445f147886c60f88830141, type: 3}
