@@ -14,11 +14,6 @@ public class PlayerAnimator : MonoBehaviour
     
     private Vector3 _playerVelocity;
 
-
-    void Start()
-    {
-        clearedLevelHash = Animator.StringToHash("ClearedLevel");
-    }
     
     // Update is called once per frame
     void Update()
@@ -29,6 +24,9 @@ public class PlayerAnimator : MonoBehaviour
         _playerVelocity.y = 0;
         
         anim.SetFloat("Velocity", _playerVelocity.sqrMagnitude);
+        
+        clearedLevelHash = Animator.StringToHash("ClearedLevel");
+    
     }
 
     void FixedUpdate()
@@ -80,6 +78,7 @@ public class PlayerAnimator : MonoBehaviour
 
     public void PlayCheer()
     {
+        Debug.Log("CHEER TRIGGERED!");
         anim.SetTrigger(clearedLevelHash);
     }
 }

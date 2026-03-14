@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
 using TMPro;
@@ -39,30 +40,39 @@ public class GameManager : MonoBehaviour
     private void ResumeGame()
     {
         pausedUI.SetActive(false);
+        AudioManager.Instance.LowerMusicForPause();
         _isPaused = false;
         Time.timeScale = 1f;
+        
     }
 
     private void PauseGame()
     {
         pausedUI.SetActive(true);
+        AudioManager.Instance.RestorMusicAfterPause();
         pausedText.SetText("Game Paused");
         _isPaused = true;
         Time.timeScale = 0f;
+        
+    }
+    
+    IEnumerator WinSequence()
+    {
+        //Debug.Log("You cleared the level!");
+                        
+        player.MoveToPosition(clearPosition.position);
+        LevelClear.Instance.ShowLevelClear("You cleared the level!");
+        yield return new WaitForSeconds(1.5f);
+        playerAnimator.PlayCheer();
+        AudioManager.Instance.FadeOutMusic(5f);
     }
     
     public void Win()
     {
-        //Debug.Log("You cleared the level!");
-        
-        player.MoveToPosition(clearPosition.position);
-
-        playerAnimator.PlayCheer();
-        
-        LevelClear.Instance.ShowLevelClear("You've cleared the level!");
-        
-        AudioManager.Instance.FadeOutMusic(5f);
+        StartCoroutine(WinSequence());
     }
+    
+    
     
     
 }

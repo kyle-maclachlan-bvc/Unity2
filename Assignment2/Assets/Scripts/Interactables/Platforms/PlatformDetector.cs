@@ -6,18 +6,13 @@ public class PlatformDetector : MonoBehaviour
     
     [SerializeField] private PlayerController playerController;
     
-    private Transform _currentParent;
-    //private float _tempGravity;
+    private Transform _playerOriginalParent;
     
     void OnTriggerEnter(Collider other)
     {
-        
-        
         if (other.gameObject.CompareTag("Player"))
         {
-            //other.gameObject.GetComponent<PlayerController>().gravity = _tempGravity;
-            
-            _currentParent = other.transform.parent;
+            _playerOriginalParent = other.transform.parent;
             other.transform.SetParent(transform);
         }
     }
@@ -28,8 +23,7 @@ public class PlatformDetector : MonoBehaviour
     { 
         if (other.gameObject.CompareTag("Player"))
         {
-            //other.gameObject.GetComponent<PlayerController>().gravity = -9.8f;
-            other.transform.SetParent(_currentParent);
+            other.transform.SetParent(_playerOriginalParent);
         }
     }
     

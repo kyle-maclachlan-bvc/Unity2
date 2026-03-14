@@ -24,7 +24,10 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource ambientSource;
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private Vector2 jumpPitchRange = new Vector2(0.8f, 1.2f);
+    [SerializeField] private float pausedMusicVolume = .05f;
 
+    private float _originalMusicVolume;
+    
     private void Awake()
     {
         if (Instance == null)
@@ -68,6 +71,8 @@ public class AudioManager : MonoBehaviour
     {
         PlayForestAmbience();
         PlayLevelMusic();
+
+        _originalMusicVolume = musicVolume;
     }
     
     // Public SFX Methods
@@ -128,5 +133,15 @@ public class AudioManager : MonoBehaviour
         {
             musicSource.Stop();
         });
+    }
+
+    public void LowerMusicForPause()
+    {
+        musicSource.DOFade(pausedMusicVolume, 0.25f).SetUpdate(true);
+    }
+
+    public void RestorMusicAfterPause()
+    {
+        musicSource.DOFade(_originalMusicVolume, 0.25f).SetUpdate(true);
     }
 }

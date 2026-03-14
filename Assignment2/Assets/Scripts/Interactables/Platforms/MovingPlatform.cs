@@ -2,13 +2,15 @@ using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
 {
-    [Header("Platform Settings")]
-    [SerializeField] private float cycleTime = 5f;
+    [Header("Platform Settings")] [SerializeField]
+    private float cycleTime = 5f;
+
     [SerializeField] private Transform pointA;
     [SerializeField] private Transform pointB;
     [SerializeField] private float currentTime;
 
     private float _speed = 1f;
+    
 
     void Update()
     {

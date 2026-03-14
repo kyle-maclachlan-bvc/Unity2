@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bea424472319f54ab1663d079173c46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArrowLifetime
-  popEffect: {fileID: 3262885460080024161, guid: c7f42b1aaf6a1f44e96812965444aa84, type: 3}
+  popEffect: {fileID: 7751105518591194773, guid: 77dcfda1ae23c744797927bb49c632a3, type: 3}
   lifetime: 5
 --- !u!1 &4296938753773823550
 GameObject:

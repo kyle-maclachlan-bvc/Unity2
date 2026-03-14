@@ -34,7 +34,8 @@ public class ChestInteractable : MonoBehaviour, IInteractable
         Debug.Log("Interactor Out!");
         anim?.SetBool(isOpenHash, false);
         
-        _loopTween.Kill();
+        _loopTween.Kill(transform);
+        transform.localScale = Vector3.one;
         
         Toast.Instance.HideToast();
     }
