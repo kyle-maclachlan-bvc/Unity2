@@ -6,6 +6,7 @@ public class Shooter : MonoBehaviour
 {
     [SerializeField] private InputAction shootInput;
     [SerializeField] private Transform shootPoint;
+    [SerializeField] private Transform aimTrack;        // The object being aimed at
     [SerializeField] private GameObject shootObject;
     [SerializeField] private float shootForce;
     
@@ -15,20 +16,41 @@ public class Shooter : MonoBehaviour
     private bool isReadyToAttack = false;
     
     private GameObject _arrow;
+    private Vector3 _shootDirection;
+    private PlayerState _currentState;
+    private PlayerController _playerController;
 
+    void Awake()
+    {
+        _playerController = GetComponent<PlayerController>();
+    }
+    
     void OnEnable()
     {
         shootInput.Enable();
         shootInput.performed += Shoot;
+        _playerController.OnStateUpdated += StateUpdate;
     }
 
     void OnDisable()
     {
         shootInput.performed -= Shoot;
+        _playerController.OnStateUpdated -= StateUpdate;
+    }
+
+    void StateUpdate(PlayerState state)
+    {
+        _currentState = state;
     }
 
     public void Shoot(InputAction.CallbackContext context)
     {
+        if (_currentState != PlayerState.AIM) return;
+        
+        // Calculate direction
+        _shootDirection = aimTrack.position - shootPoint.position;
+        _shootDirection.Normalize();
+        
         if (!isReadyToAttack)
         {
             // First press - Ready's attack
@@ -38,7 +60,7 @@ public class Shooter : MonoBehaviour
         else
         {
             // Second press - Fires Weapon
-            AttackEvent?.Invoke();
+            FireArrow();
             isReadyToAttack = false;
         }
         
@@ -46,12 +68,13 @@ public class Shooter : MonoBehaviour
 
     public void FireArrow()
     {
+        // Add a Coroutine to Arrow for delaying FireArrow to the Release Animation
         AudioManager.Instance.PlayArrowSFX();
         
         // create a new arrow
-        _arrow = Instantiate(shootObject, shootPoint.position, shootPoint.rotation);
+        _arrow = Instantiate(shootObject, shootPoint.position, Quaternion.LookRotation(_shootDirection));
                 
         // apply a force
-        _arrow.GetComponent<Rigidbody>().AddForce(shootForce * shootPoint.forward);
+        _arrow.GetComponent<Rigidbody>().AddForce(shootForce * _shootDirection, ForceMode.Impulse);
     }
 }

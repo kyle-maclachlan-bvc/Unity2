@@ -3,11 +3,23 @@ using UnityEngine;
 public class ArrowLifetime : MonoBehaviour
 {
     [SerializeField] private GameObject popEffect;
-    [SerializeField] private float lifetime = 5f;
+
+    private Rigidbody _rb;
 
     void Start()
     {
-        Destroy(gameObject, lifetime);
+        _rb = GetComponent<Rigidbody>();
+        Invoke(nameof(DestroyAfter), 5f);
+    }
+
+    void FixedUpdate()
+    {
+        transform.forward = _rb.linearVelocity.normalized;
+    }
+
+    void DestroyAfter()
+    {
+        Destroy(gameObject);
     }
 
     void OnCollisionEnter(Collision collision)
