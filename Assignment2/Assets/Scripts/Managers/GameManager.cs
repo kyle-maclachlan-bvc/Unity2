@@ -2,6 +2,7 @@ using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -61,18 +62,22 @@ public class GameManager : MonoBehaviour
         //Debug.Log("You cleared the level!");
                         
         player.MoveToPosition(clearPosition.position);
-        LevelClear.Instance.ShowLevelClear("You cleared the level!");
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2f);
         playerAnimator.PlayCheer();
+        LevelClear.Instance.ShowLevelClear("You cleared the level!");
         AudioManager.Instance.FadeOutMusic(5f);
+        yield return new WaitForSeconds(3f);
+        LoadLevel2();
     }
     
     public void Win()
     {
         StartCoroutine(WinSequence());
     }
-    
-    
-    
-    
+
+    public void LoadLevel2()
+    {
+        SceneManager.LoadScene("Level2");
+    }
+
 }

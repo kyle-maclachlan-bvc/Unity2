@@ -1,19 +1,24 @@
 using System;
+using System.Collections;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class Shooter : MonoBehaviour
 {
+    
     [SerializeField] private InputAction shootInput;
     [SerializeField] private Transform shootPoint;
     [SerializeField] private Transform aimTrack;        // The object being aimed at
     [SerializeField] private GameObject shootObject;
     [SerializeField] private float shootForce;
+    [SerializeField] private float attackDelay = 1f;
     
     public event Action ReadyAttackEvent;
     public event Action AttackEvent;
 
-    private bool isReadyToAttack = false;
+    private PlayerAnimator _playerAnimator;
+    
+    private bool _isReadyToAttack = false;
     
     private GameObject _arrow;
     private Vector3 _shootDirection;
@@ -23,6 +28,7 @@ public class Shooter : MonoBehaviour
     void Awake()
     {
         _playerController = GetComponent<PlayerController>();
+        _playerAnimator = GetComponent<PlayerAnimator>();
     }
     
     void OnEnable()
@@ -51,19 +57,28 @@ public class Shooter : MonoBehaviour
         _shootDirection = aimTrack.position - shootPoint.position;
         _shootDirection.Normalize();
         
-        if (!isReadyToAttack)
+        if (!_isReadyToAttack)
         {
             // First press - Ready's attack
             ReadyAttackEvent?.Invoke();
-            isReadyToAttack = true;
+            _isReadyToAttack = true;
         }
         else
         {
             // Second press - Fires Weapon
-            FireArrow();
-            isReadyToAttack = false;
+            AttackEvent?.Invoke();
+            StartCoroutine(FireArrowDelayed());
+            _isReadyToAttack = false;
         }
         
+    }
+
+    private IEnumerator FireArrowDelayed()
+    {
+        yield return new WaitForSecondsRealtime(attackDelay);   // Accounts for pausing mid-shot
+        FireArrow();
+        
+        _playerAnimator.ResetAttack();
     }
 
     public void FireArrow()

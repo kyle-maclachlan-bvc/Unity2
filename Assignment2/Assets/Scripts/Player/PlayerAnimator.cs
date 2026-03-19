@@ -14,6 +14,11 @@ public class PlayerAnimator : MonoBehaviour
     
     private Vector3 _playerVelocity;
 
+
+    void Awake()
+    {
+       clearedLevelHash = Animator.StringToHash("ClearedLevel"); 
+    }
     
     // Update is called once per frame
     void Update()
@@ -24,9 +29,6 @@ public class PlayerAnimator : MonoBehaviour
         _playerVelocity.y = 0;
         
         anim.SetFloat("Velocity", _playerVelocity.sqrMagnitude);
-        
-        clearedLevelHash = Animator.StringToHash("ClearedLevel");
-    
     }
 
     void FixedUpdate()
@@ -56,13 +58,8 @@ public class PlayerAnimator : MonoBehaviour
 
     private void PrepAttack()
     {
-        Debug.Log("Ready Attack Event Triggered");
+        //Debug.Log("Ready Attack Event Triggered");
         anim.SetTrigger("ReadyAttack");
-    }
-
-    public void FireArrow()
-    {
-        shooter.FireArrow();
     }
 
     private void DoAttack()

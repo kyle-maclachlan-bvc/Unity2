@@ -14,7 +14,10 @@ public class ArrowLifetime : MonoBehaviour
 
     void FixedUpdate()
     {
-        transform.forward = _rb.linearVelocity.normalized;
+        if (_rb.linearVelocity.sqrMagnitude > 0.001f)
+        {
+            transform.forward = _rb.linearVelocity.normalized;
+        }
     }
 
     void DestroyAfter()
