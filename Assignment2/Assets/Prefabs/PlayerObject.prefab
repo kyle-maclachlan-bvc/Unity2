@@ -149,7 +149,7 @@ MonoBehaviour:
   jumpVelocity: 10
   gravity: -20
   moveSpeedAim: 5
-  rotationSpeedAim: 5
+  rotationSpeedAim: 10
   aimTrack: {fileID: 6654933122100027393}
   maxAimHeight: 3.9
   minAimHeight: 0.1
@@ -237,7 +237,6 @@ MonoBehaviour:
   playerController: {fileID: 2498411986603410959}
   anim: {fileID: 9197102183879272758}
   shooter: {fileID: 4053650975609061381}
-  attackTimer: 0
   clearedLevelHash: 0
 --- !u!114 &4053650975609061381
 MonoBehaviour:

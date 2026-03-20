@@ -5,14 +5,14 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("EXPLORE Movement")]
+    [Header("EXPLORE Movement")]                            // All Variables required for Explore Movement Actions
     [SerializeField] private Camera playerCamera;
     [SerializeField] private float moveSpeed = 2;
     [SerializeField] private float rotationSpeed = 10;
     [SerializeField] private float jumpVelocity = 10f;
     public float gravity = -9.8f;
 
-    [Space(10)] [Header("AIM Movement")]
+    [Space(10)] [Header("AIM Movement")]            // All Variables required for Aim Movement Actions
     [SerializeField] private float moveSpeedAim = 2;
     [SerializeField] private float rotationSpeedAim = 10f;
     [SerializeField] private Transform aimTrack;
@@ -20,24 +20,26 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float minAimHeight;
     
     [Space(10)]
-    [Header("Ground Check")]
+    [Header("Ground Check")]                                // All Variables required to GroundCheck for Jumping
     [SerializeField] private Vector3 groundCheckOffset;
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private float groundCheckRadius;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float coyoteTime = 0.15f;
 
-    private float _lastGroundedTime;
+    private float _lastGroundedTime;    // Helps with coyoteTime, does not require SerializeField
 
-    [Space(10)] [Header("Pausing")]
+    [Space(10)]
+    [Header("Pausing")]                                     // All variables required for pausing the game
     [SerializeField] private InputAction PauseInput;
 
+    // All Variables required for Clearing Level Animation Loop
     private bool _autoMove;
     private bool _controlIsLocked;
     private Vector3 _autoMoveTarget;
     
-    public event Action OnJumpEvent;
-    public event Action<PlayerState> OnStateUpdated;
+    public event Action OnJumpEvent;                    // The OnJumpEvent sent to PlayerAnimator
+    public event Action<PlayerState> OnStateUpdated;    // The OnStateUpdate sent to CameraSwitch
     
     // Private Variables not to be adjusted or preset
     private Vector2 _moveInput;
@@ -52,12 +54,10 @@ public class PlayerController : MonoBehaviour
     private Vector3 _defaultAimTrackerPosition;
     private Vector3 _tempAimTrackerPosition;
     
-    private bool _readyAttack;
-    private bool _isAttacking;
-    
+    // Variable for changing player state
     private PlayerState _currentState;
     
-    // Property of the variable so it may be accessed by other codes.
+    // Property of the variable so it may be accessed by other codes, but not editable
     public bool IsGrounded()
     {
         return _isGrounded;
@@ -66,17 +66,7 @@ public class PlayerController : MonoBehaviour
     {
         return _velocity;
     }
-    public bool ReadyAttack()
-    {
-        return _readyAttack;
-    }
-    public bool IsAttacking()
-    {
-        return _isAttacking;
-    }
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
     void Start()
     {
         // set the default state
@@ -101,6 +91,7 @@ public class PlayerController : MonoBehaviour
 
         if (_controlIsLocked)
         {
+            // Stop the player from Moving and Aiming during Clear Level
             return;
         }
 
@@ -165,7 +156,7 @@ public class PlayerController : MonoBehaviour
 
     private void CalculateMovementExplore()
     {
-        // This is for the Explore Camera Mechanic
+        // This is for the Explore Camera-based movement
         _camForward = playerCamera.transform.forward;
         _camRight = playerCamera.transform.right;
         _camForward.y = 0;
@@ -181,7 +172,7 @@ public class PlayerController : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, rotationSpeed * Time.deltaTime);
         }
         
-        //Calculate gravity
+        //Calculate gravity, keeping the player to the ground
         _velocity = _velocity.y * Vector3.up + moveSpeed * _moveDirection ;
         _velocity.y += gravity * Time.deltaTime;
     }
@@ -192,7 +183,7 @@ public class PlayerController : MonoBehaviour
         transform.Rotate(Vector3.up, rotationSpeedAim * _lookInput.x * Time.deltaTime);
         
         // WASD relates to where the player currently faces
-        // Left / Right = Straifing (sideways), foward / back = player's facing directions
+        // Left / Right = Strafing (sideways), forward / back = player's facing directions
         _moveDirection = _moveInput.x * transform.right + _moveInput.y * transform.forward;
         
         _velocity = _velocity.y * Vector3.up + moveSpeedAim * _moveDirection;

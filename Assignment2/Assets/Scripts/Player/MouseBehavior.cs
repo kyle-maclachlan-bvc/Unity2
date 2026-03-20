@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class MouseBehavior : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    // This code hides the mouse, and allows the movement of the mouse to always adjust the camera.
+    // This code is for Keyboard Play, Controller Play does not utilize this.
     void Start()
     {
         ShowMouse(false);

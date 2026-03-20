@@ -5,20 +5,21 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class Shooter : MonoBehaviour
 {
-    
-    [SerializeField] private InputAction shootInput;
-    [SerializeField] private Transform shootPoint;
+    [Header("Shooter Settings")]                        // Variables designed to set up the Shooter Methods
+    [SerializeField] private InputAction shootInput;    // Button to press to shoot
+    [SerializeField] private Transform shootPoint;      // Origin Point of the Arrow
     [SerializeField] private Transform aimTrack;        // The object being aimed at
-    [SerializeField] private GameObject shootObject;
-    [SerializeField] private float shootForce;
-    [SerializeField] private float attackDelay = 1f;
+    [SerializeField] private GameObject shootObject;    // Arrow
+    [SerializeField] private float shootForce;          // Force applied to arrow to launch
+    [SerializeField] private float attackDelay = 1f;    // Time delayed for Arrow Shot to match "Release Animation".
     
-    public event Action ReadyAttackEvent;
-    public event Action AttackEvent;
+    public event Action ReadyAttackEvent;               // Event to help trigger Ready to Attack Animation
+    public event Action AttackEvent;                    // Eventto Help trigger Attack Animation
 
-    private PlayerAnimator _playerAnimator;
+    private PlayerAnimator _playerAnimator;             // Grab the playerAnimator for the Events to react.
     
-    private bool _isReadyToAttack = false;
+    private bool _isReadyToAttack = false;              // Set up Code to register player is ready to attack.
+    // TODO: Perhaps change this bool to match AIM mode.
     
     private GameObject _arrow;
     private Vector3 _shootDirection;
@@ -47,6 +48,17 @@ public class Shooter : MonoBehaviour
     void StateUpdate(PlayerState state)
     {
         _currentState = state;
+
+        if (_currentState == PlayerState.AIM)
+        {
+            ReadyAttackEvent?.Invoke();
+            _isReadyToAttack = true;
+        }
+        else
+        {
+            _isReadyToAttack = false;
+            _playerAnimator.ResetAttack();
+        }
     }
 
     public void Shoot(InputAction.CallbackContext context)
@@ -57,28 +69,15 @@ public class Shooter : MonoBehaviour
         _shootDirection = aimTrack.position - shootPoint.position;
         _shootDirection.Normalize();
         
-        if (!_isReadyToAttack)
-        {
-            // First press - Ready's attack
-            ReadyAttackEvent?.Invoke();
-            _isReadyToAttack = true;
-        }
-        else
-        {
-            // Second press - Fires Weapon
-            AttackEvent?.Invoke();
-            StartCoroutine(FireArrowDelayed());
-            _isReadyToAttack = false;
-        }
-        
+        // Fire Weapon
+        AttackEvent?.Invoke();
+        StartCoroutine(FireArrowDelayed());
     }
 
     private IEnumerator FireArrowDelayed()
     {
         yield return new WaitForSecondsRealtime(attackDelay);   // Accounts for pausing mid-shot
         FireArrow();
-        
-        _playerAnimator.ResetAttack();
     }
 
     public void FireArrow()

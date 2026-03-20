@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject pausedUI;
     [SerializeField] private TMP_Text pausedText;
     
-    [SerializeField] private Transform clearPosition;   // where the Player will stand after clearing level.
+    [SerializeField] private Transform clearPosition;           // where the Player will stand after clearing level.
     [SerializeField] private PlayerController player;
     [SerializeField] private PlayerAnimator playerAnimator;
     
@@ -64,7 +64,6 @@ public class GameManager : MonoBehaviour
         player.MoveToPosition(clearPosition.position);
         yield return new WaitForSeconds(2f);
         playerAnimator.PlayCheer();
-        LevelClear.Instance.ShowLevelClear("You cleared the level!");
         AudioManager.Instance.FadeOutMusic(5f);
         yield return new WaitForSeconds(3f);
         LoadLevel2();

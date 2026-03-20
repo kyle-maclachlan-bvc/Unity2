@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class NPCInteractable : MonoBehaviour, IInteractable
 {
+    // The interactable behavior for approaching NPC characters.
+    
     [SerializeField] private Animator anim;
     [SerializeField] private string dialogue = "Hello, Ever! Take good care of my bow!";
 

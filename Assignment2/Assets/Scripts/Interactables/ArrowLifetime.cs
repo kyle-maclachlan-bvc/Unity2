@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ArrowLifetime : MonoBehaviour
 {
-    [SerializeField] private GameObject popEffect;
+    [SerializeField] private GameObject popEffect;      // When the balloon paps, this pops out
 
     private Rigidbody _rb;
 
@@ -31,7 +31,7 @@ public class ArrowLifetime : MonoBehaviour
         {
             AudioManager.Instance.PlayBalloonPop();
             Instantiate(popEffect, collision.transform.position, Quaternion.identity);
-            Destroy(collision.gameObject);  // Pop the balloon
+            Destroy(collision.gameObject);  // Pop the balloon, the arrow stays because Arrow is sharp, and does not make sense to destroy arrow.
         }
     }
 }

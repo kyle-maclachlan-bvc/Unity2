@@ -4,11 +4,13 @@ using DG.Tweening;
 
 public class AudioManager : MonoBehaviour
 {
+    // The audio manager collects all the music, sfx and voices used in the game. Music attributions in Tech Doc.
+    
     public static AudioManager Instance;
 
     [Header("Sound Effects")]
     [SerializeField] private AudioClip treasurePickup;   // Interact with Treasure Chest SFX
-    [SerializeField] private AudioClip levelClear;
+    [SerializeField] private AudioClip levelClear;      // Cleared Level Sound Effect.
     [SerializeField] private AudioClip forestAmbience;  // Audio for Forest Ambience
     [SerializeField] private AudioClip levelMusic;      // Music for Level 1
     [SerializeField] private AudioClip playerJump;      // Character SFX for jumping

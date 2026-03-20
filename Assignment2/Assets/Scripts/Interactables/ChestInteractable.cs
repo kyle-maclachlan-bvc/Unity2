@@ -3,24 +3,24 @@ using DG.Tweening;
 
 public class ChestInteractable : MonoBehaviour, IInteractable
 {
+    // The interactable behavior for approaching Chests.
+    
     [SerializeField] private Animator anim;
     [SerializeField] private Rigidbody rb;
 
-    private int isOpenHash;
-    private Tween _loopTween;
-    private Tween _collectTween;
+    private int isOpenHash;     // Sets up hash for opening the chest animation
+    private Tween _loopTween;   // Creates tween that pulses when in interaction range
+    private Tween _collectTween;    // Creates tween that shrinks the chest and destroys it.
     
     void Start()
     {
         if (anim == null) return;
         isOpenHash = Animator.StringToHash("IsOpen");
-        
-        
     }
 
     public void OnHoverIn()
     {
-        Debug.Log("Interactor In!");
+        //Debug.Log("Interactor In!");
         anim?.SetBool(isOpenHash, true);
         
         _loopTween = transform.DOScale(1.2f, .5f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutQuad);
@@ -31,7 +31,7 @@ public class ChestInteractable : MonoBehaviour, IInteractable
 
     public void OnHoverOff()
     {
-        Debug.Log("Interactor Out!");
+        //Debug.Log("Interactor Out!");
         anim?.SetBool(isOpenHash, false);
         
         _loopTween.Kill(transform);
@@ -42,7 +42,7 @@ public class ChestInteractable : MonoBehaviour, IInteractable
 
     public void OnInteract()
     {
-        Debug.Log($"interacted with {gameObject.name}");
+        //Debug.Log($"interacted with {gameObject.name}");
         
         AudioManager.Instance.PlayTreasurePickup();
 
@@ -53,12 +53,6 @@ public class ChestInteractable : MonoBehaviour, IInteractable
         
         Toast.Instance.HideToast();
     }
-
-    /*void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("ground"))
-            rb.constraints = RigidbodyConstraints.FreezeAll;
-    }*/
 
     void OnDestroy()
     {
