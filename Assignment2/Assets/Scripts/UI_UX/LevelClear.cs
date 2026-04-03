@@ -1,15 +1,10 @@
 using UnityEngine;
 using TMPro;
 
-public class LevelClear : MonoBehaviour
+public class LevelClear : UIMessageBase
 {
     public static LevelClear Instance;
-
-    [SerializeField] private GameObject levelClearUI;
-    [SerializeField] private TMP_Text levelClearText;
-
     
-
 void Awake()
     {
         if (Instance != null && Instance != this)
@@ -18,21 +13,14 @@ void Awake()
         Instance = this;
     }
 
-    void Start()
+    public void ShowLevelClear(string message)
     {
-        levelClearUI.SetActive(false);
-    }
-
-    public void ShowLevelClear(string textValue)
-    {
-        
-        levelClearUI.SetActive(true);
-        levelClearText.SetText(textValue);
+        Show(message);
     }
 
     public void HideLevelClear()
     {
-        levelClearUI.SetActive(false);
+        Hide();
     }
 
 }

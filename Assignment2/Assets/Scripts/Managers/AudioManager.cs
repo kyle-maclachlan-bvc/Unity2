@@ -1,4 +1,3 @@
-using Mono.Cecil.Cil;
 using UnityEngine;
 using DG.Tweening;
 
@@ -93,7 +92,7 @@ public class AudioManager : MonoBehaviour
         if (playerJump == null) return;
         
         sfxSource.pitch = Random.Range(jumpPitchRange.x, jumpPitchRange.y);
-        PlaySFX(playerJump);
+        PlaySFX(playerJump, Random.Range(0.8f, 1.2f));
     }
 
     public void PlayArrowSFX()
@@ -107,9 +106,11 @@ public class AudioManager : MonoBehaviour
     }
     
     // Internal Helper
-    private void PlaySFX(AudioClip clip)
+    private void PlaySFX(AudioClip clip, float pitch = 1f)
     {
         if (clip == null) return;
+
+        sfxSource.pitch = pitch;
         sfxSource.PlayOneShot(clip, sfxVolume);
     }
 
@@ -142,7 +143,7 @@ public class AudioManager : MonoBehaviour
         musicSource.DOFade(pausedMusicVolume, 0.25f).SetUpdate(true);
     }
 
-    public void RestorMusicAfterPause()
+    public void RestoreMusicAfterPause()
     {
         musicSource.DOFade(_originalMusicVolume, 0.25f).SetUpdate(true);
     }

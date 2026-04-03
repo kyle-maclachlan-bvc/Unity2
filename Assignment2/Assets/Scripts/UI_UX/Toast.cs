@@ -1,34 +1,24 @@
-using TMPro;
 using UnityEngine;
 
-public class Toast : MonoBehaviour
+public class Toast : UIMessageBase
 {
     public static Toast Instance;
-
-    [SerializeField] private GameObject toastUI;
-    [SerializeField] private TMP_Text toastText;
+    
     void Awake()
     {
-        // Simple singleton
         if (Instance != null && Instance != this)
             Destroy(this.gameObject);
 
         Instance = this;
     }
 
-    void Start()
+    public void ShowToast(string message)
     {
-        toastUI.SetActive(false);
-    }
-
-    public void ShowToast(string textValue)
-    {
-        toastUI.SetActive(true);
-        toastText.SetText(textValue);
+        Show(message);
     }
 
     public void HideToast()
     {
-        toastUI.SetActive(false);
+        Hide();
     }
 }

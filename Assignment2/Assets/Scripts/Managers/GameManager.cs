@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
     private void PauseGame()
     {
         pausedUI.SetActive(true);
-        AudioManager.Instance.RestorMusicAfterPause();
+        AudioManager.Instance.RestoreMusicAfterPause();
         pausedText.SetText("Game Paused");
         _isPaused = true;
         Time.timeScale = 0f;

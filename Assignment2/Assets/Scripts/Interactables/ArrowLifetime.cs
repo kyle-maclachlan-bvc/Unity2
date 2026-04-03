@@ -27,11 +27,10 @@ public class ArrowLifetime : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Balloon"))
-        {
-            AudioManager.Instance.PlayBalloonPop();
-            Instantiate(popEffect, collision.transform.position, Quaternion.identity);
-            Destroy(collision.gameObject);  // Pop the balloon, the arrow stays because Arrow is sharp, and does not make sense to destroy arrow.
-        }
+
+        IArrowInteractable interactable = collision.gameObject.GetComponent<IArrowInteractable>();
+
+        if (interactable != null)
+            interactable.OnArrowHit();
     }
 }

@@ -12,20 +12,15 @@ public class Crosshair : MonoBehaviour
     
     private void OnEnable()
     {
-        playerController.OnStateUpdated += StateUpdate;
+        playerController.OnStateUpdated += HandleStateChange;
     }
 
     private void OnDestroy()
     {
-        playerController.OnStateUpdated -= StateUpdate;
+        playerController.OnStateUpdated -= HandleStateChange;
     }
 
-    void State()
-    {
-        crosshairCanvas.enabled = true;
-    }
-
-    void StateUpdate(PlayerState state)
+    void HandleStateChange(PlayerState state)
     {
         crosshairCanvas.enabled = state == PlayerState.AIM;
     }

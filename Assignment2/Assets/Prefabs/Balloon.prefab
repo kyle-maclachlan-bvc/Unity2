@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6183964536180487506}
   - component: {fileID: 56507167111207011}
   - component: {fileID: 5598077996708888198}
+  - component: {fileID: -9209434495611366883}
   m_Layer: 0
   m_Name: Balloon
   m_TagString: Balloon
@@ -111,3 +112,16 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-9209434495611366883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5584242096816319886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f21a36ee5a7b044693e5901a9ab46bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Balloon
+  popEffect: {fileID: 7751105518591194773, guid: 77dcfda1ae23c744797927bb49c632a3, type: 3}

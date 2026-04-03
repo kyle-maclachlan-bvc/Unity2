@@ -1,10 +1,12 @@
 using System;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    private MovementHandler _movementHandler;
+    private GroundChecker _groundChecker;
+    
     [Header("EXPLORE Movement")]                            // All Variables required for Explore Movement Actions
     [SerializeField] private Camera playerCamera;
     [SerializeField] private float moveSpeed = 2;
@@ -26,9 +28,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundCheckRadius;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float coyoteTime = 0.15f;
-
-    private float _lastGroundedTime;    // Helps with coyoteTime, does not require SerializeField
-
+    
     [Space(10)]
     [Header("Pausing")]                                     // All variables required for pausing the game
     [SerializeField] private InputAction PauseInput;
@@ -45,19 +45,15 @@ public class PlayerController : MonoBehaviour
     private Vector2 _moveInput;
     private Vector2 _lookInput;
     private Vector3 _camForward;
-    private Vector3 _camRight;
-    private Vector3 _moveDirection;
     private CharacterController _characterController;
-    private Quaternion _targetRotation;
     private Vector3 _velocity;
     private bool _isGrounded;
     private Vector3 _defaultAimTrackerPosition;
     private Vector3 _tempAimTrackerPosition;
     
-    // Variable for changing player state
+
     private PlayerState _currentState;
     
-    // Property of the variable so it may be accessed by other codes, but not editable
     public bool IsGrounded()
     {
         return _isGrounded;
@@ -69,55 +65,43 @@ public class PlayerController : MonoBehaviour
     
     void Start()
     {
+        _movementHandler = new MovementHandler();
+        _groundChecker = new GroundChecker();
+        
         // set the default state
         _currentState = PlayerState.EXPLORE;
         OnStateUpdated?.Invoke(_currentState);
         
-        // set up the character controller
-        _characterController = GetComponent<CharacterController>();
-        
-        // Tracker position
-        _defaultAimTrackerPosition = aimTrack.localPosition;
+        _characterController = GetComponent<CharacterController>(); // Set up the Character Controller
+        _defaultAimTrackerPosition = aimTrack.localPosition;        // Tracker Position
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (_autoMove)
-             {
-                 AutoMove();
-                 return;
-             }
-
-        if (_controlIsLocked)
-        {
-            // Stop the player from Moving and Aiming during Clear Level
-            return;
-        }
-
-        if (_currentState == PlayerState.EXPLORE)
-        {
-            CalculateMovementExplore();
-            aimTrack.localPosition = _defaultAimTrackerPosition;
-        }
-        else if (_currentState == PlayerState.AIM)
-        {
-            CalculateMovementAim();
-            UpdateAimTrack();
-        }
-
+        if (HandleAutoMove()) return;
+        if (_controlIsLocked) return;
+        HandleMovement();
         _characterController.Move(_velocity * Time.deltaTime);
     }
 
     private void FixedUpdate()
     {
-        CheckGrounded();
+        _isGrounded = _groundChecker.CheckGrounded(
+            transform,
+            groundCheckOffset,
+            groundCheckRadius,
+            groundCheckDistance,
+            groundLayer,
+            coyoteTime
+        );
         if (_isGrounded && _velocity.y < 0)
         {
             _velocity.y = -0.2f;
         }
     }
 
+    #region Input
     public void OnMove(InputValue value)
     {
         _moveInput = value.Get<Vector2>();
@@ -142,7 +126,6 @@ public class PlayerController : MonoBehaviour
     public void OnAim(InputValue value)
     {
             _currentState = value.isPressed ? PlayerState.AIM : PlayerState.EXPLORE;
-            
             if (_currentState == PlayerState.AIM)
             {
                 _camForward = playerCamera.transform.forward;
@@ -150,44 +133,49 @@ public class PlayerController : MonoBehaviour
                 _camForward.Normalize();
                 transform.rotation = Quaternion.LookRotation(_camForward);
             }
-            
             OnStateUpdated?.Invoke(_currentState);
     }
 
-    private void CalculateMovementExplore()
+    private void HandleMovement()
     {
-        // This is for the Explore Camera-based movement
-        _camForward = playerCamera.transform.forward;
-        _camRight = playerCamera.transform.right;
-        _camForward.y = 0;
-        _camRight.y = 0;
-        _camForward.Normalize();
-        _camRight.Normalize();
-
-        _moveDirection = _camRight * _moveInput.x + _camForward * _moveInput.y;
-
-        if(_moveDirection.sqrMagnitude > 0.01f)
+        switch (_currentState)
         {
-            _targetRotation = Quaternion.LookRotation(_moveDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, rotationSpeed * Time.deltaTime);
+            case PlayerState.EXPLORE:
+                HandleExploreMovement();
+                break;
+            case PlayerState.AIM:
+                HandleAimMovement();
+                break;
         }
-        
-        //Calculate gravity, keeping the player to the ground
-        _velocity = _velocity.y * Vector3.up + moveSpeed * _moveDirection ;
-        _velocity.y += gravity * Time.deltaTime;
     }
 
-    private void CalculateMovementAim()
+    private void HandleExploreMovement()
     {
-        // Rotate the player around the Y Axis based on X(Horizontal Input)
-        transform.Rotate(Vector3.up, rotationSpeedAim * _lookInput.x * Time.deltaTime);
-        
-        // WASD relates to where the player currently faces
-        // Left / Right = Strafing (sideways), forward / back = player's facing directions
-        _moveDirection = _moveInput.x * transform.right + _moveInput.y * transform.forward;
-        
-        _velocity = _velocity.y * Vector3.up + moveSpeedAim * _moveDirection;
-        _velocity.y += gravity * Time.deltaTime;
+        _velocity = _movementHandler.CalculateExploreMovement(
+            _moveInput,
+            playerCamera,
+            moveSpeed,
+            rotationSpeed,
+            transform,
+            ref _velocity,
+            gravity
+        );
+        aimTrack.localPosition = _defaultAimTrackerPosition;
+    }
+
+    private void HandleAimMovement()
+    {
+        _velocity = _movementHandler.CalculateAimMovement(
+            _moveInput,
+            _lookInput,
+            moveSpeedAim,
+            rotationSpeedAim,
+            transform,
+            ref _velocity,
+            gravity
+        );
+
+        UpdateAimTrack();
     }
 
     private void UpdateAimTrack()
@@ -197,24 +185,9 @@ public class PlayerController : MonoBehaviour
         _tempAimTrackerPosition.y = Mathf.Clamp(_tempAimTrackerPosition.y, minAimHeight, maxAimHeight);
         aimTrack.localPosition = _tempAimTrackerPosition;
     }
-
-    public void CheckGrounded()
-    {
-        _isGrounded = Physics.SphereCast(
-            transform.position + groundCheckOffset,
-            groundCheckRadius,
-            Vector3.down,
-            out RaycastHit hit,
-            groundCheckDistance,
-            groundLayer
-        );
-
-        if (_isGrounded)
-            _lastGroundedTime = Time.time;
-
-        _isGrounded = Time.time - _lastGroundedTime <= coyoteTime;
-    }
+    #endregion
     
+    #region Grounding
     void OnDrawGizmos()
     {
         Gizmos.color = Color.purple;
@@ -223,7 +196,9 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawCube(transform.position + groundCheckOffset + Vector3.down * groundCheckDistance/2, 
                     new Vector3(1.5f* groundCheckRadius, groundCheckDistance , 1.5f * groundCheckRadius) );
     }
+    #endregion
 
+    #region Input
     void OnEnable()
     {
         PauseInput.Enable();
@@ -239,35 +214,38 @@ public class PlayerController : MonoBehaviour
     {
         GameManager.Instance.TogglePause();
     }
+    #endregion
 
+    #region AutoMove
     public void MoveToPosition(Vector3 target)
     {
         _autoMove = true;
         _controlIsLocked = true;
         _autoMoveTarget = target;
-        
         LevelClear.Instance.ShowLevelClear("You Cleared the Level");
+    }
+
+    private bool HandleAutoMove()
+    {
+        if (!_autoMove) return false;
+        AutoMove();
+        return true;
     }
 
     void AutoMove()
     {
         Vector3 direction = (_autoMoveTarget - transform.position);
         direction.y = 0;
-
         if (direction.magnitude < 0.1f)
         {
             _autoMove = false;
             _velocity = Vector3.zero;
             return;
         }
-
         direction.Normalize();
-        
         _characterController.Move(direction * moveSpeed * Time.deltaTime);
-
         Quaternion lookRot = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, rotationSpeed * Time.deltaTime);
     }
+    #endregion
 }
-
-

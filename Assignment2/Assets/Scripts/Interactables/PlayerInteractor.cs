@@ -7,7 +7,6 @@ public class PlayerInteractor : MonoBehaviour
     [SerializeField] private InputAction interactionInput;
 
     private IInteractable _interactable;
-    private IInteractable _tempInteractable;
 
     void OnEnable()
     {
@@ -22,12 +21,10 @@ public class PlayerInteractor : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        _tempInteractable = other.GetComponent<IInteractable>();
+        _interactable = other.GetComponent<IInteractable>();
 
-        if (_tempInteractable != null)
+        if (_interactable != null)
         {
-           _interactable = _tempInteractable;
-            //_interactable = other.gameObject.GetComponent<IInteractable>();
             _interactable?.OnHoverIn(); 
         }
         
@@ -41,7 +38,6 @@ public class PlayerInteractor : MonoBehaviour
 
     private void Interact(InputAction.CallbackContext context)
     {
-        Debug.Log($"Interact Button");
         _interactable?.OnInteract();    // checks if _interactable is null.
     }
 }

@@ -31,8 +31,6 @@ public class NPCInteractable : MonoBehaviour, IInteractable
 
     public void OnInteract()
     {
-        Debug.Log("Talking to NPC");
-
         anim.SetTrigger(interactHash);
         Toast.Instance.ShowToast(dialogue);
         anim.SetBool(waveHash, false);
