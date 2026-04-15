@@ -20,6 +20,7 @@ public class Shooter : MonoBehaviour
     
     private bool _isReadyToAttack = false;              // Set up Code to register player is ready to attack.
     // TODO: Perhaps change this bool to match AIM mode.
+    private bool _isAttacking = false;
     
     private GameObject _arrow;
     private Vector3 _shootDirection;
@@ -64,20 +65,37 @@ public class Shooter : MonoBehaviour
     public void Shoot(InputAction.CallbackContext context)
     {
         if (_currentState != PlayerState.AIM) return;
+
+        if (_isAttacking) return;
         
         // Calculate direction
         _shootDirection = aimTrack.position - shootPoint.position;
         _shootDirection.Normalize();
         
         // Fire Weapon
-        AttackEvent?.Invoke();
-        StartCoroutine(FireArrowDelayed());
+        if (!_isReadyToAttack)
+        {
+            ReadyAttackEvent?.Invoke();
+            _isReadyToAttack = true;
+        }
+        else
+        {
+            AttackEvent?.Invoke();
+            _isAttacking = true;
+            StartCoroutine(FireArrowDelayed());
+            _isReadyToAttack = false;
+        }
+        
+        
+        
     }
 
     private IEnumerator FireArrowDelayed()
     {
         yield return new WaitForSecondsRealtime(attackDelay);   // Accounts for pausing mid-shot
         FireArrow();
+        _playerAnimator.ResetAttack();
+        _isAttacking = false;
     }
 
     public void FireArrow()
