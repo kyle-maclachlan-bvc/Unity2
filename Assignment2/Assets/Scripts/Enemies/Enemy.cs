@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Vector3 = UnityEngine.Vector3;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IArrowInteractable
 {
     private EnemyState _currentState;
     private Transform _currentTarget;
@@ -18,6 +18,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float chaseDistance;
     [SerializeField] private float giveUpDistance;
     [SerializeField] private float chaseAngle;
+
+    [SerializeField] private int enemyHealth = 1;
     
     //Animator
     [SerializeField] private Animator enemyAnim;
@@ -108,5 +110,15 @@ public class Enemy : MonoBehaviour
     private bool PlayerHasEscaped()
     {
         return Vector3.Distance(transform.position, playerTransform.position) >= giveUpDistance;
+    }
+
+    public void OnArrowHit()
+    {
+        AudioManager.Instance.PlayBalloonPop();
+        enemyHealth--;
+        if (enemyHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }
