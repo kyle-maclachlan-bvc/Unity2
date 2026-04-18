@@ -1,26 +1,18 @@
 using UnityEngine;
 using TMPro;
 
-public class LevelClear : UIMessageBase
+public class LevelClear : Singleton<LevelClear>
 {
-    public static LevelClear Instance;
-    
-void Awake()
-    {
-        if (Instance != null && Instance != this)
-            Destroy(this.gameObject);
+    [SerializeField] private UIMessageBase ui;
 
-        Instance = this;
+    public void ShowToast(string message)
+    {
+        ui.Show(message);
     }
 
-    public void ShowLevelClear(string message)
+    public void HideToast()
     {
-        Show(message);
-    }
-
-    public void HideLevelClear()
-    {
-        Hide();
+        ui.Hide();
     }
 
 }

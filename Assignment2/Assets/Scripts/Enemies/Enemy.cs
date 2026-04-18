@@ -1,10 +1,9 @@
 using System.Collections;
-using System.Numerics;
 using UnityEngine;
 using UnityEngine.AI;
 using Vector3 = UnityEngine.Vector3;
 
-public class Enemy : MonoBehaviour, IArrowInteractable
+public class Enemy : MonoBehaviour, IArrowInteractable, IDamageable
 {
     private EnemyState _currentState;
     private Transform _currentTarget;
@@ -12,6 +11,7 @@ public class Enemy : MonoBehaviour, IArrowInteractable
     private Vector3 _directionToPlayer;
     
     // used in a different script traditionally, like EnemyManager
+    [Header("AI")]
     [SerializeField] private Transform[] patrolPoints;
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Transform playerTransform;
@@ -19,7 +19,12 @@ public class Enemy : MonoBehaviour, IArrowInteractable
     [SerializeField] private float giveUpDistance;
     [SerializeField] private float chaseAngle;
 
+    [Header("Combat")]
     [SerializeField] private int enemyHealth = 1;
+    [SerializeField] private int damage = 1;
+    [SerializeField] private float attackCooldown = 1f;
+
+    private bool _canAttack = true;
     
     //Animator
     [SerializeField] private Animator enemyAnim;
@@ -114,11 +119,47 @@ public class Enemy : MonoBehaviour, IArrowInteractable
 
     public void OnArrowHit()
     {
-        AudioManager.Instance.PlayBalloonPop();
-        enemyHealth--;
+        TakeDamage(1);
+    }
+
+    public void TakeDamage(int amount)
+    {
+        enemyHealth -= amount;
+
         if (enemyHealth <= 0)
         {
-            Destroy(gameObject);
+            Die();
+        }
+                
+    }
+
+    private void Die()
+    {
+        AudioManager.Instance.PlayBalloonPop();
+        Destroy(gameObject);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        Debug.Log($"Enemy touching {other.name}");
+        
+        if (!_canAttack) return;
+        
+        IDamageable damageable = other.GetComponent<IDamageable>();
+
+        if (damageable != null)
+        {
+            damageable.TakeDamage(damage);
+            StartCoroutine(AttackCooldown());
         }
     }
+
+    private IEnumerator AttackCooldown()
+    {
+        _canAttack = false;
+        yield return new WaitForSeconds(attackCooldown);
+        _canAttack = true;
+    }
+
+    
 }

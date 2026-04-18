@@ -2,6 +2,8 @@ using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
+using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -14,6 +16,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform clearPosition;           // where the Player will stand after clearing level.
     [SerializeField] private PlayerController player;
     [SerializeField] private PlayerAnimator playerAnimator;
+
+    [SerializeField] private int lives = 3;
     
     private bool _isPaused = false;
 
@@ -79,4 +83,24 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("Level2");
     }
 
+    public void PlayerDied()
+    {
+        lives--;
+
+        if (lives > 0)
+        {
+            RestartLevel();
+        }
+        else
+        {
+            Debug.Log("Game Over");
+        }
+        
+    }
+
+    void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    
 }

@@ -50,7 +50,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -98,7 +98,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArrowLifetime
   popEffect: {fileID: 7751105518591194773, guid: 77dcfda1ae23c744797927bb49c632a3, type: 3}
-  lifetime: 5
 --- !u!1 &4296938753773823550
 GameObject:
   m_ObjectHideFlags: 0

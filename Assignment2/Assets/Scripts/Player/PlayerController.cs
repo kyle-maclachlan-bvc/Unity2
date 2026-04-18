@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform aimTrack;
     [SerializeField] private float maxAimHeight;
     [SerializeField] private float minAimHeight;
+
+    private bool _isDead = false;
     
     [Space(10)]
     [Header("Ground Check")]                                // All Variables required to GroundCheck for Jumping
@@ -79,6 +81,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_isDead) return;
+        
         if (HandleAutoMove()) return;
         if (_controlIsLocked) return;
         HandleMovement();
@@ -184,6 +188,11 @@ public class PlayerController : MonoBehaviour
         _tempAimTrackerPosition.y -= _lookInput.y * rotationSpeedAim * Time.deltaTime;
         _tempAimTrackerPosition.y = Mathf.Clamp(_tempAimTrackerPosition.y, minAimHeight, maxAimHeight);
         aimTrack.localPosition = _tempAimTrackerPosition;
+    }
+
+    public void LockControls()
+    {
+        _isDead = true;
     }
     #endregion
     

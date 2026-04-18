@@ -1,24 +1,16 @@
 using UnityEngine;
 
-public class Toast : UIMessageBase
+public class Toast : Singleton<Toast>
 {
-    public static Toast Instance;
-    
-    void Awake()
-    {
-        if (Instance != null && Instance != this)
-            Destroy(this.gameObject);
-
-        Instance = this;
-    }
+    [SerializeField] private UIMessageBase ui;
 
     public void ShowToast(string message)
     {
-        Show(message);
+        ui.Show(message);
     }
 
     public void HideToast()
     {
-        Hide();
+        ui.Hide();
     }
 }
