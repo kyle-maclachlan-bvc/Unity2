@@ -27,6 +27,8 @@ public class ArrowLifetime : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        //Debug.Log($"Arrow Collided with: {collision.gameObject.name}");
+        
         IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();
 
         if (damageable != null)
